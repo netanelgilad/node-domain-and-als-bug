@@ -1,5 +1,5 @@
 import express from "express";
-import domain from "domain";
+import domain, { Domain } from "domain";
 import { AsyncLocalStorage } from "async_hooks";
 
 export function startServer() {
@@ -15,14 +15,11 @@ export function startServer() {
 
       theDomain["dataFromClient"] = dataFromClient;
 
-      theDomain.enter();
-
-      const theAsyncData = await anAsyncFunctionThatReturnsFromContext();
-
-      theDomain.exit();
-
-      res.header("data", theAsyncData);
-      res.end();
+      myOwnRunImpl(theDomain, async () => {
+        const theAsyncData = await anAsyncFunctionThatReturnsFromContext();
+        res.header("data", theAsyncData);
+        res.end();
+      });
     });
 
     app.get("/async-local-storage", async (req, res) => {
@@ -49,4 +46,12 @@ export function startServer() {
       );
     }
   });
+}
+
+function myOwnRunImpl(aDomain: Domain, fn: () => void) {
+  aDomain.enter();
+  const ret = fn.apply(aDomain, [...arguments].slice(2));
+  aDomain.exit();
+
+  return ret;
 }
