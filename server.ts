@@ -35,11 +35,11 @@ export function startServer() {
       someAsyncStorage.run({ dataFromClient }, async () => {
         const theAsyncData = await anAsyncFunctionThatReturnsFromContext();
 
+        theDomain.exit();
+        
         res.header("data", theAsyncData);
         res.end();
       });
-
-      theDomain.exit();
     });
 
     app.listen(3000, () => {
