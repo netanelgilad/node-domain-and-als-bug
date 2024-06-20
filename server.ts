@@ -15,14 +15,11 @@ export function startServer() {
 
       theDomain["dataFromClient"] = dataFromClient;
 
-      theDomain.enter();
-
-      const theAsyncData = await anAsyncFunctionThatReturnsFromContext();
-
-      theDomain.exit();
-
-      res.header("data", theAsyncData);
-      res.end();
+      theDomain.run(async () => {
+        const theAsyncData = await anAsyncFunctionThatReturnsFromContext();
+        res.header("data", theAsyncData);
+        res.end();
+      });
     });
 
     app.get("/async-local-storage", async (req, res) => {
