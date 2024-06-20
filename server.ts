@@ -28,9 +28,15 @@ export function startServer() {
     app.get("/async-local-storage", async (req, res) => {
       const dataFromClient = req.headers["data"];
 
+      const theDomain = domain.create();
+
+      theDomain.enter();
+
       someAsyncStorage.run({ dataFromClient }, async () => {
         const theAsyncData = await anAsyncFunctionThatReturnsFromContext();
 
+        theDomain.exit();
+        
         res.header("data", theAsyncData);
         res.end();
       });
