@@ -28,12 +28,18 @@ export function startServer() {
     app.get("/async-local-storage", async (req, res) => {
       const dataFromClient = req.headers["data"];
 
+      const theDomain = domain.create();
+
+      theDomain.enter();
+
       someAsyncStorage.run({ dataFromClient }, async () => {
         const theAsyncData = await anAsyncFunctionThatReturnsFromContext();
 
         res.header("data", theAsyncData);
         res.end();
       });
+
+      theDomain.exit();
     });
 
     app.listen(3000, () => {
