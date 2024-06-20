@@ -17,11 +17,11 @@ export function startServer() {
 
       theDomain.enter();
 
-      const theAsyncData = await anAsyncFunctionThatReturnsFromContext();
+      const theAsyncData = anAsyncFunctionThatReturnsFromContext();
 
       theDomain.exit();
 
-      res.header("data", theAsyncData);
+      res.header("data", await theAsyncData);
       res.end();
     });
 
