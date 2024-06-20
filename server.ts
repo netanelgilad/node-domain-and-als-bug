@@ -44,8 +44,8 @@ export function startServer() {
     async function anAsyncFunctionThatReturnsFromContext() {
       await new Promise((resolve) => setTimeout(resolve, Math.random() * 100));
       return (
-        (process as any).domain?.["dataFromClient"] ??
-        someAsyncStorage.getStore()?.["dataFromClient"]
+        someAsyncStorage.getStore()?.["dataFromClient"] ??
+        (process as any).domain?.["dataFromClient"]
       );
     }
   });
